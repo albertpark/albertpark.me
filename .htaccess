@@ -1,0 +1,7 @@
+#<IfModule mod_rewrite.c>
+    RewriteEngine on
+    
+    # This allows you to redirect your entire website to any other domain
+    RewriteCond %{HTTP_HOST} ^albertpark.me [NC,OR]
+    RewriteRule ^(.*)$ http://albert.park.ac/$1 [L,R=302,NC]
+#</IfModule>
