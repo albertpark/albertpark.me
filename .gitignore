@@ -1,0 +1,10 @@
+# cache folders
+/cache
+# ignore all logs
+log
+logs
+*.log
+
+robots.txt
+# ignore zip files
+*.zip

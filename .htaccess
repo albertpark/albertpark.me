@@ -1,7 +1,31 @@
-#<IfModule mod_rewrite.c>
-    RewriteEngine on
-    
-    # This allows you to redirect your entire website to any other domain
-    RewriteCond %{HTTP_HOST} ^albertpark.me [NC,OR]
-    RewriteRule ^(.*)$ http://albert.park.ac/$1 [L,R=302,NC]
-#</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
+    # Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Origin https://bible.park.ac
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  
+  # This allows you to redirect your entire website to any other domain
+  #RewriteCond %{HTTP_HOST} ^albertpark.me [NC,OR]
+  #RewriteRule ^(.*)$ http://albert.park.ac/$1 [L,R=302,NC]
+
+  ## Force SSL with a temporary redirect [2020-04-08]
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=302,L]
+
+  ## Setting up CDN without changing or redirecting the url [2020-04-16]
+  RewriteCond %{REQUEST_URI} \.(gif|ico|jpe?g|png)$ [NC]
+  RewriteRule ^cdn/(.*)\.(gif|ico|jpe?g|png)$ https://%{HTTP_HOST}/public/cdn/img/$1.$2 [P]
+  ## Setting up CDN without changing or redirecting the url [2020-04-16]
+  RewriteCond %{REQUEST_URI} \.(ttf|woff?)$ [NC]
+  RewriteRule ^cdn/(.*)\.(ttf|woff2?)$ https://%{HTTP_HOST}/public/cdn/font/$1.$2 [P]
+
+  # Added by a2hosting mods
+  RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+  RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
+  RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=302,L]
+</IfModule>
